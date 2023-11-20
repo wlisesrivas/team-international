@@ -66,3 +66,24 @@ class TestDataCapture(TestCase):
         self.assertEqual(stats.less(4), 3)
         self.assertEqual(stats.between(2, 5), 3)
         self.assertEqual(stats.greater(5), 0)
+
+    def test_add_positive_numbers(self):
+        capture = DataCapture()
+        self.assertTrue(capture.add(0))
+        self.assertTrue(capture.add(5))
+        self.assertTrue(capture.add(216))
+        self.assertFalse(capture.add(-4))
+
+    def test_validate_range(self):
+        capture = DataCapture()
+        capture.add(1)
+        capture.add(5)
+        capture.add(1)
+        stats = capture.build_stats()
+
+        self.assertEqual(stats.less(5), 2)
+        self.assertEqual(stats.less(-1), -1)
+        self.assertEqual(stats.greater(1), 1)
+        self.assertEqual(stats.greater(-5), -1)
+        self.assertEqual(stats.between(1, 6), 3)
+        self.assertEqual(stats.between(-5, 5), -1)
