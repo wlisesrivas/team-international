@@ -2,15 +2,14 @@ from typing import Optional, List
 
 
 class Stats:
-    def __init__(self, values: List[int], reversed_values: List[int]):
+    def __init__(self, values: List[int]):
         self.values = values
-        self.reversed_values = reversed_values
         self.max_amount = len(self.values)
 
     def _validate(self, number: int, high: Optional[int] = None) -> bool:
         """Perform basic validations."""
 
-        if len(self.values) == 0 or len(self.reversed_values) == 0:
+        if len(self.values) == 0:
             print('Error: It seems like there is no data for statistics.')
             return False
 
@@ -36,7 +35,7 @@ class Stats:
     def greater(self, number: int) -> int:
         """Query how many numbers in the collection are greater than a given value."""
 
-        return self.reversed_values[number + 1] if self._validate(number) else -1
+        return self.values[self.max_amount - 1] - self.values[number] if self._validate(number) else -1
 
     def between(self, low: int, high: int) -> int:
         """Query how many numbers in the collection are within a specified range."""
@@ -60,16 +59,12 @@ class DataCapture:
             return False
 
     def build_stats(self) -> Stats:
-        self.sum = [0] * self.max_amount
-        self.sum_reversed = [0] * self.max_amount
+        sum = [0] * self.max_amount
 
         for idx, val in enumerate(self.elements):
-            reversed_idx = self.max_amount - 1 - idx
             if idx == 0:
-                self.sum[idx] = val
-                self.sum_reversed[reversed_idx] = self.elements[reversed_idx]
+                sum[idx] = val
             else:
-                self.sum[idx] = self.sum[idx - 1] + val
-                self.sum_reversed[reversed_idx] = self.sum_reversed[reversed_idx + 1] + self.elements[reversed_idx]
+                sum[idx] = sum[idx - 1] + val
 
-        return Stats(self.sum, self.sum_reversed)
+        return Stats(sum)
